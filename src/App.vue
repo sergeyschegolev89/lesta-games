@@ -71,7 +71,7 @@ export default Vue.extend({
     async getCountries () {
       try {
         const res = await this.$apollo.query({ query: GET_ALL_COUNTRIES });
-        this.countries = res.data.countries.sort((a:any, b:any) => a.name > b.name);
+        this.countries = res.data.countries.sort((a:any, b:any) => a.name > b.name ? 1 : -1);
       } catch (e) {
         console.log('err', e)
       }
