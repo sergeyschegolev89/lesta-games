@@ -1,10 +1,8 @@
-import gql from 'graphql-tag'
-
-export const GET_ALL_COUNTRIES = gql`{ 
+query { 
     countries {
         code
         name
         capital
         currency
     }
-  }`
+  }

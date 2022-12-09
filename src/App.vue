@@ -2,7 +2,7 @@
  <v-app>
       <v-row align-content="start" dense justify="start">
         <v-col cols="12" sm="2" align-self="center">
-          <v-btn @click='getCountries()'>Get Countries</v-btn>
+          <v-btn @click='load()' :loading="loading">Get Countries</v-btn>
         </v-col>
         <v-col cols="12" sm="2">
           <v-select 
@@ -41,56 +41,33 @@
  </v-app>
 </template>
 
-<script lang="ts">
-import { GET_ALL_COUNTRIES } from '@/graphql/countriesQuery'
-import CountryCard from '@/components/CountryCard.vue' 
-import { provideApolloClient, useQuery } from '@vue/apollo-composable'
-import { ref, computed, Ref, ComputedRef } from 'vue';
-import { apolloClient } from '../src/vue-apollo'
+<script lang="ts" setup>
+  import query from './graphql/countriesQuery.gql'
+  import CountryCard from '@/components/CountryCard.vue' 
+  import { useLazyQuery } from '@vue/apollo-composable'
+  import { ref, computed, Ref, ComputedRef } from 'vue';
 
-type Country = {
-  name: string
-  code: string
-  capital: string
-  currency: string
-}
-
-export default {
-  name: 'App',
-  components: {
-    CountryCard
-  },
-  setup() {
-    const countries: Ref<Country[]> = ref([]);
-    const types: string[] = ['Name', 'Currency'];
-    const filterType: Ref<string> = ref('Name');
-    const filter: Ref<string> = ref('');
-
-    const filteredCountries: ComputedRef<Country[]> = computed(
-      () => countries.value.filter((country:Country) => country[filterType.value.toLowerCase() as keyof Country]?.toLowerCase().includes(filter.value))
-    ); 
-
-    provideApolloClient(apolloClient);
-    const getCountries = () => {
-      try {
-        const { onResult } = useQuery(GET_ALL_COUNTRIES);  
-        onResult((result) => {
-          countries.value = [...result.data.countries].sort((a: Country, b: Country) => a.name > b.name ? 1 : -1) as Country[];
-        })    
-      } catch (e) {
-        console.log('err', e)
-      }
-    }
-
-    return {
-      types,
-      filterType,
-      filter,
-      filteredCountries,
-      getCountries
-    }
+  interface Country {
+    name: string
+    code: string
+    capital: string
+    currency: string
   }
-}
+
+  const countries: Ref<Country[]> = ref([]);
+  const types: string[] = ['Name', 'Currency'];
+  const filterType: Ref<string> = ref('Name');
+  const filter: Ref<string> = ref('');
+
+  const { onResult, load, loading } = useLazyQuery(query);  
+  onResult((result) => {
+    countries.value = [...result.data.countries].sort((a: Country, b: Country) => a.name > b.name ? 1 : -1) as Country[];
+  })
+
+  const filteredCountries: ComputedRef<Country[]> = computed(
+    () => countries.value.filter((country:Country) => country[filterType.value.toLowerCase() as keyof Country]?.toLowerCase().includes(filter.value))
+  ); 
+
 //export default defineComponent({
 
   // name: 'App',
