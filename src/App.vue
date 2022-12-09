@@ -1,10 +1,10 @@
 <template id="app">
  <v-app>
       <v-row align-content="start" dense justify="start">
-        <v-col cols="2" align-self="center">
+        <v-col cols="12" sm="2" align-self="center">
           <v-btn @click='getCountries()'>Get Countries</v-btn>
         </v-col>
-        <v-col cols="2">
+        <v-col cols="12" sm="2">
           <v-select 
             v-model="filterType" 
             :items="types" 
@@ -14,7 +14,7 @@
             hide-details
           ></v-select>
         </v-col>
-        <v-col cols="3">
+        <v-col cols="12" sm="3">
           <v-text-field 
             v-model="filter" 
             label="Filter" 
@@ -28,7 +28,8 @@
         <v-col
           v-for="country in filteredCountries" 
           :key="country.code"
-          cols="3"
+          cols="12"
+          sm="3"
         >
           <country-card 
             :name="country.name"
