@@ -1,7 +1,7 @@
 <template id="app">
  <v-app>
-      <v-row align-content="start" dense justify="start">
-        <v-col cols="12" sm="2" align-self="center">
+      <v-row align-content="start" dense justify="start" class="mainrow">
+        <v-col cols="12" sm="2" align-self="center" class="formbutton">
           <v-btn @click='load()' :loading="loading">Get Countries</v-btn>
         </v-col>
         <v-col cols="12" sm="2">
@@ -106,6 +106,13 @@
 <style>
   #app {
     margin: 20px;
+  }
+  .mainrow {
+    flex:none !important;
+  }
+  .formbutton {
+    display: flex;
+    justify-content: center;
   }
 </style>
 
