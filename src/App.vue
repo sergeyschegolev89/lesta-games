@@ -1,7 +1,7 @@
 <template id="app">
  <v-app>
-      <v-row>
-        <v-col cols="2">
+      <v-row align-content="start" dense justify="start">
+        <v-col cols="2" align-self="center">
           <v-btn @click='getCountries()'>Get Countries</v-btn>
         </v-col>
         <v-col cols="2">
@@ -24,7 +24,7 @@
           />
         </v-col>
       </v-row>
-      <v-row align="start">
+      <v-row >
         <v-col
           v-for="country in filteredCountries" 
           :key="country.code"
@@ -41,43 +41,89 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
 import { GET_ALL_COUNTRIES } from '@/graphql/countriesQuery'
 import CountryCard from '@/components/CountryCard.vue' 
+import { provideApolloClient, useQuery } from '@vue/apollo-composable'
+import { ref, computed, Ref, ComputedRef } from 'vue';
+import { apolloClient } from '../src/vue-apollo'
 
-export default Vue.extend({
+type Country = {
+  name: string
+  code: string
+  capital: string
+  currency: string
+}
+
+export default {
   name: 'App',
   components: {
     CountryCard
   },
-  data() {
-    return {
-      countries: [],
-      types: [
-        'Name', 
-        'Currency'
-      ],
-      filterType: 'Name',
-      filter: ''
-    }
-  },
-  computed: {
-    filteredCountries(): Array<Object> {
-      return this.countries.filter((country:any) => 
-        country[this.filterType.toLowerCase()]?.toLowerCase().includes(this.filter));
-    }
-  },
-  methods: {
-    async getCountries () {
+  setup() {
+    const countries: Ref<Country[]> = ref([]);
+    const types: string[] = ['Name', 'Currency'];
+    const filterType: Ref<string> = ref('Name');
+    const filter: Ref<string> = ref('');
+
+    const filteredCountries: ComputedRef<Country[]> = computed(
+      () => countries.value.filter((country:Country) => country[filterType.value.toLowerCase() as keyof Country]?.toLowerCase().includes(filter.value))
+    ); 
+
+    provideApolloClient(apolloClient);
+    const getCountries = () => {
       try {
-        const res = await this.$apollo.query({ query: GET_ALL_COUNTRIES });
-        this.countries = res.data.countries.sort((a:any, b:any) => a.name > b.name ? 1 : -1);
+        const { onResult } = useQuery(GET_ALL_COUNTRIES);  
+        onResult((result) => {
+          countries.value = [...result.data.countries].sort((a: Country, b: Country) => a.name > b.name ? 1 : -1) as Country[];
+        })    
       } catch (e) {
         console.log('err', e)
       }
     }
+
+    return {
+      types,
+      filterType,
+      filter,
+      filteredCountries,
+      getCountries
+    }
   }
-});
+}
+//export default defineComponent({
+
+  // name: 'App',
+  // components: {
+  //   CountryCard
+  // },
+  // data() {
+  //   return {
+  //     countries: [],
+  //     types: [
+  //       'Name', 
+  //       'Currency'
+  //     ],
+  //     filterType: 'Name',
+  //     filter: ''
+  //   }
+  // },
+  // computed: {
+  //   filteredCountries(): Object[] {
+  //     return this.countries.filter((country:any) => 
+  //       country[this.filterType.toLowerCase()]?.toLowerCase().includes(this.filter));
+  //   }
+  // },
+  // methods: {
+  //   async getCountries () {
+  //     try {
+  //       const res = await this.$apollo.query({ query: GET_ALL_COUNTRIES });       
+  //       this.countries = [...res.data.countries].sort((a:any, b:any) => a.name > b.name ? 1 : -1) as any;
+  //     } catch (e) {
+  //       console.log('err', e)
+  //     }
+  //   }
+  // }
+//});
 </script>
 <style>
   #app {
