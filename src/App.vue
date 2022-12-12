@@ -44,15 +44,9 @@
 <script lang="ts" setup>
   import query from './graphql/countriesQuery.gql'
   import CountryCard from '@/components/CountryCard.vue' 
+  import { Country } from './interfaces/country'
   import { useLazyQuery } from '@vue/apollo-composable'
   import { ref, computed, Ref, ComputedRef } from 'vue';
-
-  interface Country {
-    name: string
-    code: string
-    capital: string
-    currency: string
-  }
 
   const countries: Ref<Country[]> = ref([]);
   const types: string[] = ['Name', 'Currency'];
