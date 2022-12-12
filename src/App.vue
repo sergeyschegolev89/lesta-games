@@ -62,40 +62,6 @@
     () => countries.value.filter((country:Country) => country[filterType.value.toLowerCase() as keyof Country]?.toLowerCase().includes(filter.value))
   ); 
 
-//export default defineComponent({
-
-  // name: 'App',
-  // components: {
-  //   CountryCard
-  // },
-  // data() {
-  //   return {
-  //     countries: [],
-  //     types: [
-  //       'Name', 
-  //       'Currency'
-  //     ],
-  //     filterType: 'Name',
-  //     filter: ''
-  //   }
-  // },
-  // computed: {
-  //   filteredCountries(): Object[] {
-  //     return this.countries.filter((country:any) => 
-  //       country[this.filterType.toLowerCase()]?.toLowerCase().includes(this.filter));
-  //   }
-  // },
-  // methods: {
-  //   async getCountries () {
-  //     try {
-  //       const res = await this.$apollo.query({ query: GET_ALL_COUNTRIES });       
-  //       this.countries = [...res.data.countries].sort((a:any, b:any) => a.name > b.name ? 1 : -1) as any;
-  //     } catch (e) {
-  //       console.log('err', e)
-  //     }
-  //   }
-  // }
-//});
 </script>
 <style>
   #app {
