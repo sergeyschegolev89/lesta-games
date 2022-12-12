@@ -3,7 +3,7 @@ module.exports = defineConfig({
   transpileDependencies: true,
   devServer: {
     open: process.platform === 'darwin',
-    host: '0.0.0.0',
+    host: 'localhost',
     port: 80, 
     https: false,
   },
